@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(auctex cdlatex magit which-key avy tree-sitter-langs tree-sitter orderless consult corfu general undo-tree vertico use-package nano-theme nano-modeline evil))
+   '(reftex apheleia lsp-mode posframe yasnippet auctex cdlatex magit which-key avy tree-sitter-langs tree-sitter orderless consult corfu general undo-tree vertico use-package nano-theme nano-modeline evil))
  '(widget-image-enable nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
