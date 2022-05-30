@@ -9,23 +9,19 @@
 (eval-when-compile
   (require 'use-package))
 
-(setq use-package-always-ensure t)
-
-;; (setq use-package-always-ensure t)
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(load-theme 'whiteboard t)
 
 (use-package nano-theme
   :config
-    (setq nano-fonts-use t)
-    (nano-mode)
+  (setq nano-fonts-use t)
+  (nano-mode))
 
-    ; (nano-dark)
-    )
 
-(load-theme 'whiteboard t)
 (use-package nano-modeline
   :init
   (setq nano-modeline-prefix-padding t)
@@ -138,9 +134,9 @@
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; (kbd "C-+")
+  (setq consult-narrow-key "<"))
 
-<<<<<<< HEAD
+
 (use-package which-key
   :config (which-key-mode))
 
@@ -152,39 +148,6 @@
   :defer t
   :ensure t)
 
-(use-package cdlatex
-  :hook ((org-mode . org-cdlatex-mode)
-	 (LaTeX-mode . cdlatex-mode)))
-
-(use-package latex
-  :ensure auctex
-  :init (setq TeX-auto-save t
-	      TeX-parse-self t
-	      TeX-master nil))
-
-(use-package reftex
-  :init (setq reftex-plug-into-AUCTeX t))
-
-
-=======
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
->>>>>>> 5caf8dbf60019d0ba4b99a5c269b0c76ae05cea4
-
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
-  ;; There are multiple reasonable alternatives to chose from.
-  ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 3. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 4. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-)
 
 (use-package corfu
   ;; Optional customizations
@@ -264,7 +227,7 @@
 	      TeX-electric-sub-and-superscript t
 	      TeX-command-extra-options "-shell-escape"
 	      TeX-master nil
-	      TeX-engine "xetex")
+	      TeX-engine 'xetex)
   :hook ((LaTeX-mode . turn-on-auto-fill)
 	 (LaTeX-mode . LaTeX-math-mode)
 	 (latex-mode . flymake-mode)
@@ -275,10 +238,7 @@
 			    '("lemma" LaTeX-env-label)
 			    '("definition" LaTeX-env-label)
 			    '("corollary" LaTeX-env-label))
-    ;; (add-to-list 'LaTeX-label-alist '("theorem" . "thm:"))
-    
-    (setf LaTeX-label-alist (cl-list* '("lemma" . "lem:") '("theorem" . "thm:") '("definition" . "def:") '("corollary" . "cor:") LaTeX-label-alist))
-    ))
+    (setf LaTeX-label-alist (cl-list* '("lemma" . "lem:") '("theorem" . "thm:") '("definition" . "def:") '("corollary" . "cor:") LaTeX-label-alist))))
 
 (use-package reftex
   :after latex
@@ -286,15 +246,10 @@
   :init (setq reftex-plug-into-AUCTeX t)
   :config
   (add-to-list 'reftex-label-alist '("theorem" ?h "thm:" "~\\ref{%s}" t ("Theorem" "theorem") nil) )  
- (add-to-list 'reftex-label-alist '("definition" ?d "def:" "~ref{%s}" t ("Definition" "definition") nil) )  
- (add-to-list 'reftex-label-alist '("corollary" ?c "cor:" "~ref{%s}" t ("Corollary" "corollary") nil) )
- (add-to-list 'reftex-label-alist '("lemma" ?m "lem:" "~ref{%s}" t ("Lemma" "lemma") nil) )
-(reftex-reset-mode))
-
-(with-eval-after-load "latex"
-
-
-  )
+  (add-to-list 'reftex-label-alist '("definition" ?d "def:" "~ref{%s}" t ("Definition" "definition") nil) )  
+  (add-to-list 'reftex-label-alist '("corollary" ?c "cor:" "~ref{%s}" t ("Corollary" "corollary") nil) )
+  (add-to-list 'reftex-label-alist '("lemma" ?m "lem:" "~ref{%s}" t ("Lemma" "lemma") nil) )
+  (reftex-reset-mode))
 
 (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
 
@@ -311,6 +266,14 @@
 
 (use-package apheleia
   :config (apheleia-global-mode +1))
+
+(use-package gap
+  :mode (("\\.g\\'" . gap-mode)
+	 ("\\.gap\\'" . gap-mode))
+  :init
+  (setq gap-executable "/usr/bin/gap")
+  :config
+  (add-to-list 'gap-start-options "-E"))
 
 (setq
  sentence-end-double-space nil
@@ -340,3 +303,7 @@
 (global-set-key (kbd "M-/") 'hippie-expand)
 (setq-default abbrev-mode t)
 (setq abbrev-file-name "~/.emacs.d/abbrev.el")
+(global-unset-key (kbd "<down-mouse-1>"))
+(global-unset-key (kbd "<mouse-1>"))
+(global-unset-key (kbd "<down-mouse-3>"))
+(global-unset-key (kbd "<mouse-3>"))
