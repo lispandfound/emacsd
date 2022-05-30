@@ -21,6 +21,12 @@
   (setq nano-fonts-use t)
   (nano-mode))
 
+(use-package org
+  :init
+  (setq org-agenda-files '("~/notes/todo.org"))
+  (global-set-key (kbd "C-c l") #'org-store-link)
+  (global-set-key (kbd "C-c a") #'org-agenda)
+  (global-set-key (kbd "C-c c") #'org-capture))
 
 (use-package nano-modeline
   :init
@@ -35,6 +41,9 @@
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
+
+;; (use-package org
+;;   :init )
 
 
 
@@ -274,6 +283,30 @@
   (setq gap-executable "/usr/bin/gap")
   :config
   (add-to-list 'gap-start-options "-E"))
+
+(use-package mu4e
+  :init (setq mu4e-user-mail-address-list '("jaf150@uclive.ac.nz")
+	      mu4e-maildir-shortcuts '(("/uni/inbox" . ?i))
+	      send-mail-function 'smtpmail-send-it
+	      
+	      mu4e-get-mail-command "mbsync uni")
+  :config
+  (setq mu4e-contexts `(,(make-mu4e-context
+				:name "uni"
+				:vars '((user-mail-address . "jake.faulkner@pg.canterbury.ac.nz")
+					(smtpmail-smtp-user . "jaf150@uclive.ac.nz")
+						      (smtpmail-smtp-service . 1025)
+
+						      (smtpmail-smtp-server . "localhost")
+
+					
+					
+					(user-full-name . "Jake Faulkner"))
+				:match-func (lambda (msg)
+					      (when msg
+						(mu4e-message-contact-field-matches msg
+										    :to "jaf150@uclive.ac.nz")))))))
+
 
 (setq
  sentence-end-double-space nil
