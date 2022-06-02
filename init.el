@@ -307,6 +307,9 @@
 						(mu4e-message-contact-field-matches msg
 										    :to "jaf150@uclive.ac.nz")))))))
 
+(use-package dumb-jump
+  :ensure t
+  :hook (xref-backend-functions . #'dumb-jump-xref-activate))
 
 (setq
  sentence-end-double-space nil
