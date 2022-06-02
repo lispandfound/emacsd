@@ -11,6 +11,7 @@
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
+(toggle-frame-fullscreen)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -24,6 +25,7 @@
 (use-package org
   :init
   (setq org-agenda-files '("~/notes/todo.org"))
+  
   (global-set-key (kbd "C-c l") #'org-store-link)
   (global-set-key (kbd "C-c a") #'org-agenda)
   (global-set-key (kbd "C-c c") #'org-capture))
@@ -153,6 +155,9 @@
   :bind (("C-x g" . magit-status)))
   
 
+(use-package which-key
+  :config (which-key-mode))
+
 (use-package avy
   :defer t
   :ensure t)
@@ -183,6 +188,8 @@
   :init
   (global-corfu-mode))
 
+
+
 ;; A few more useful configurations...
 (use-package emacs
   :init
@@ -197,11 +204,23 @@
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
-
-(use-package vertico			
+(use-package vertico
   :config
   (vertico-mode))
 
+(use-package marginalia
+  ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+  :bind (("M-A" . marginalia-cycle)
+         :map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+  :ensure t
+
+  ;; The :init configuration is always executed (Not lazy!)
+  :init
+
+  ;; Must be in the :init section of use-package such that the mode gets
+  ;; enabled right away. Note that this forces loading the package.
+  (marginalia-mode))
 (use-package savehist
   :config
   (savehist-mode))
@@ -263,15 +282,15 @@
 (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
 
 
-(use-package lsp-mode
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :hook (
-	 (latex-mode . lsp)
-         ;; if you want whianoch-key integration
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
+;; (use-package lsp-mode
+;;   :init
+;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   :hook (
+;; 	 (latex-mode . lsp)
+;;          ;; if you want whianoch-key integration
+;;          (lsp-mode . lsp-enable-which-key-integration))
+;;   :commands lsp)
 
 (use-package apheleia
   :config (apheleia-global-mode +1))
@@ -307,9 +326,25 @@
 						(mu4e-message-contact-field-matches msg
 										    :to "jaf150@uclive.ac.nz")))))))
 
+
 (use-package dumb-jump
   :ensure t
   :hook (xref-backend-functions . #'dumb-jump-xref-activate))
+
+(use-package popwin
+  :ensure t
+  :config
+  (popwin-mode 1))
+
+(use-package eglot
+  :ensure t
+  :init
+  (add-hook 'latex-mode-hook #'eglot-mode))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :init (exec-path-from-shell-initialize))
+(add-hook 'prog-mode-hook #'flymake-mode)
 
 (setq
  sentence-end-double-space nil
@@ -336,10 +371,24 @@
 (global-auto-revert-mode t)               ; Auto-update buffer if file
 					; has changed on disk
 
+(defadvice he-substitute-string (after he-paredit-fix)
+  "remove extra paren when expanding line in paredit."
+
+  (if (and electric-indent-mode (equal (substring str -1) ")"))
+      (progn
+        (backward-delete-char 1)
+        (forward-char))))
+
 (global-set-key (kbd "M-/") 'hippie-expand)
+
+
+
+
 (setq-default abbrev-mode t)
 (setq abbrev-file-name "~/.emacs.d/abbrev.el")
+
 (global-unset-key (kbd "<down-mouse-1>"))
 (global-unset-key (kbd "<mouse-1>"))
 (global-unset-key (kbd "<down-mouse-3>"))
 (global-unset-key (kbd "<mouse-3>"))
+(winner-mode 1)

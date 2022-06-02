@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(dumb-jump gap-mode reftex apheleia lsp-mode posframe yasnippet auctex cdlatex magit which-key avy tree-sitter-langs tree-sitter orderless consult corfu general undo-tree vertico use-package nano-theme nano-modeline evil))
+   '(exec-path-from-shell eglot marginalia popwin dumb-jump gap-mode reftex apheleia lsp-mode posframe yasnippet auctex cdlatex magit which-key avy tree-sitter-langs tree-sitter orderless consult corfu general undo-tree vertico use-package nano-theme nano-modeline evil))
  '(smtpmail-smtp-server "localhost")
  '(smtpmail-smtp-service 1025)
  '(widget-image-enable nil))
