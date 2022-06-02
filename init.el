@@ -1,3 +1,4 @@
+ (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -13,7 +14,7 @@
 (load custom-file)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 (load-theme 'whiteboard t)
 
 (use-package nano-theme
@@ -23,10 +24,13 @@
 
 (use-package org
   :init
-  (setq org-agenda-files '("~/notes/todo.org"))
+  (setq org-agenda-files '("~/notes/todo.org")
+	org-refile-targets '((nil . (:level . 1)) ("~/notes/archive.org" . (:level . 1))))
   (global-set-key (kbd "C-c l") #'org-store-link)
   (global-set-key (kbd "C-c a") #'org-agenda)
-  (global-set-key (kbd "C-c c") #'org-capture))
+  (global-set-key (kbd "C-c c") #'org-capture)
+  :config
+  (add-hook 'org-mode-hook 'org-indent-mode))
 
 (use-package nano-modeline
   :init
@@ -158,30 +162,30 @@
   :ensure t)
 
 
-(use-package corfu
-  ;; Optional customizations
-  ;; :custom
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-auto t)                 ;; Enable auto completion
-  ;; (corfu-separator ?\s)          ;; Orderless field separator
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
-  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+;; (use-package corfu
+;;   ;; Optional customizations
+;;   ;; :custom
+;;   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+;;   ;; (corfu-auto t)                 ;; Enable auto completion
+;;   ;; (corfu-separator ?\s)          ;; Orderless field separator
+;;   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+;;   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+;;   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+;;   ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+;;   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+;;   ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+;;   ;; (corfu-scroll-margin 5)        ;; Use scroll margin
 
-  ;; Enable Corfu only for certain modes.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
+;;   ;; Enable Corfu only for certain modes.
+;;   ;; :hook ((prog-mode . corfu-mode)
+;;   ;;        (shell-mode . corfu-mode)
+;;   ;;        (eshell-mode . corfu-mode))
 
-  ;; Recommended: Enable Corfu globally.
-  ;; This is recommended since Dabbrev can be used globally (M-/).
-  ;; See also `corfu-excluded-modes'.
-  :init
-  (global-corfu-mode))
+;;   ;; Recommended: Enable Corfu globally.
+;;   ;; This is recommended since Dabbrev can be used globally (M-/).
+;;   ;; See also `corfu-excluded-modes'.
+;;   :init
+;;   (global-corfu-mode))
 
 ;; A few more useful configurations...
 (use-package emacs
@@ -279,10 +283,8 @@
 (use-package gap
   :mode (("\\.g\\'" . gap-mode)
 	 ("\\.gap\\'" . gap-mode))
-  :init
-  (setq gap-executable "/usr/bin/gap")
-  :config
-  (add-to-list 'gap-start-options "-E"))
+  :custom ((gap-executable "/usr/bin/gap")
+	   (gap-start-options '("-f" "-b" "-m" "-E" "2m"))))
 
 (use-package mu4e
   :init (setq mu4e-user-mail-address-list '("jaf150@uclive.ac.nz")
@@ -290,7 +292,9 @@
 	      send-mail-function 'smtpmail-send-it
 	      
 	      mu4e-get-mail-command "mbsync uni")
+  
   :config
+  (add-hook 'mu4e-compose-mode-hook #'turn-off-auto-fill)
   (setq mu4e-contexts `(,(make-mu4e-context
 				:name "uni"
 				:vars '((user-mail-address . "jake.faulkner@pg.canterbury.ac.nz")
@@ -307,7 +311,9 @@
 						(mu4e-message-contact-field-matches msg
 										    :to "jaf150@uclive.ac.nz")))))))
 
-
+(use-package popwin
+  :ensure t
+  :config (popwin-mode 1))
 (setq
  sentence-end-double-space nil
  tab-always-indent 'complete
@@ -332,8 +338,18 @@
 (delete-selection-mode 1)                 ; Selected text will be overwritten when you start typing
 (global-auto-revert-mode t)               ; Auto-update buffer if file
 					; has changed on disk
+(defadvice he-substitute-string (after he-paredit-fix)
+  "remove extra paren when expanding line in paredit"
+  (message str)
+  (message (and electric-pair-mode (equal (substring str -1) ")")))
+  (if (and electric-pair-mode (equal (substring str -1) ")"))
+      (progn (backward-delete-char 1) (forward-char))))
 
-(global-set-key (kbd "M-/") 'hippie-expand)
+(global-auto-revert-mode t)
+(global-set-key (kbd "<tab>") 'hippie-expand)
+
+
+
 (setq-default abbrev-mode t)
 (setq abbrev-file-name "~/.emacs.d/abbrev.el")
 (global-unset-key (kbd "<down-mouse-1>"))
