@@ -15,7 +15,7 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(load-theme 'whiteboard t)
+(load-theme 'modus-operandi t)
 
 (use-package nano-theme
   :config
@@ -25,10 +25,10 @@
 (use-package org
   :init
   (setq org-agenda-files '("~/notes/todo.org"))
-  
   (global-set-key (kbd "C-c l") #'org-store-link)
   (global-set-key (kbd "C-c a") #'org-agenda)
-  (global-set-key (kbd "C-c c") #'org-capture))
+  (global-set-key (kbd "C-c c") #'org-capture)
+  (add-hook 'org-mode-hook #'org-indent-mode))
 
 (use-package nano-modeline
   :init
@@ -189,13 +189,15 @@
   (global-corfu-mode))
 
 
+(use-package flyspell
+  :hook ((text-mode . flyspell-mode)
+	 (prog-mode . flyspell-prog-mode)))
 
 ;; A few more useful configurations...
 (use-package emacs
   :init
-  ;; TAB cycle if there are only few candidates
+  ;; cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
-
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
   ;; (setq read-extended-command-predicate
@@ -204,6 +206,7 @@
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
+
 (use-package vertico
   :config
   (vertico-mode))
@@ -298,10 +301,10 @@
 (use-package gap
   :mode (("\\.g\\'" . gap-mode)
 	 ("\\.gap\\'" . gap-mode))
+  :custom  ((gap-start-options '("-f" "-b" "-m" "2m" "-E")))
   :init
-  (setq gap-executable "/usr/bin/gap")
-  :config
-  (add-to-list 'gap-start-options "-E"))
+  (setq gap-executable "/usr/bin/gap"
+	gap-electric-equals nil))
 
 (use-package mu4e
   :init (setq mu4e-user-mail-address-list '("jaf150@uclive.ac.nz")
@@ -340,6 +343,16 @@
   :ensure t
   :init
   (add-hook 'latex-mode-hook #'eglot-mode))
+
+(use-package maxima
+  :init
+  (add-hook 'maxima-mode-hook #'maxima-hook-function)
+  (add-hook 'maxima-inferior-mode-hook #'maxima-hook-function)
+  (setq
+   org-format-latex-options (plist-put org-format-latex-options :scale 2.0)
+   maxima-display-maxima-buffer nil)
+  :mode ("\\.mac\\'" . maxima-mode)
+  :interpreter ("maxima" . maxima-mode))
 
 (use-package exec-path-from-shell
   :ensure t
