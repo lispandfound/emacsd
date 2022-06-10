@@ -349,6 +349,15 @@
   :init (exec-path-from-shell-initialize))
 (add-hook 'prog-mode-hook #'flymake-mode)
 
+(use-package citar
+  :bind (("C-c b" . citar-open-library-file)
+         :map minibuffer-local-map
+         ("M-b" . citar-insert-preset))
+  :ensure t
+  :custom
+  ((citar-bibliography '("~/notes/bibliography/bibliography.bib"))
+   (citar-library-paths '("~/notes/bibliography/pdfs"))))
+
 (setq
  sentence-end-double-space nil
  tab-always-indent 'complete
