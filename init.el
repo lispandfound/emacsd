@@ -15,25 +15,29 @@
 (toggle-frame-fullscreen)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-
-(load-theme 'whiteboard t)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(load-theme 'modus-operandi t)
 
 (use-package nano-theme
+  :ensure t
   :config
   (setq nano-fonts-use t)
   (nano-mode))
 
 (use-package org
   :init
-  (setq org-agenda-files '("~/notes/todo.org")
-	org-refile-targets '((nil . (:level . 1)) ("~/notes/archive.org" . (:level . 1))))
+  (setq org-agenda-files '("~/Sync/todo.org")
+	org-refile-targets '((nil . (:level . 1)) ("~/Sync/archive.org" . (:level . 1)))
+	org-default-notes-file "~/Sync/todo.org"
+	org-directory "~/Sync")
+  
   (global-set-key (kbd "C-c l") #'org-store-link)
   (global-set-key (kbd "C-c a") #'org-agenda)
   (global-set-key (kbd "C-c c") #'org-capture)
-  :config
-  (add-hook 'org-mode-hook 'org-indent-mode))
+  (add-hook 'org-mode-hook #'org-indent-mode))
 
 (use-package nano-modeline
+  :ensure t
   :init
   (setq nano-modeline-prefix-padding t)
   :config
@@ -43,6 +47,7 @@
 (electric-indent-mode t)
 
 (use-package orderless
+  :ensure t
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
@@ -53,6 +58,7 @@
 
 
 (use-package consult
+  :ensure t
   ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings (mode-specific-map)
          ("C-c h" . consult-history)
@@ -152,53 +158,57 @@
 
 
 (use-package which-key
+  :ensure t
   :config (which-key-mode))
 
 (use-package magit
+  :ensure t
   :bind (("C-x g" . magit-status)))
   
-
-(use-package which-key
-  :config (which-key-mode))
 
 (use-package avy
   :defer t
   :ensure t)
 
 
-;; (use-package corfu
-;;   ;; Optional customizations
-;;   ;; :custom
-;;   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-;;   ;; (corfu-auto t)                 ;; Enable auto completion
-;;   ;; (corfu-separator ?\s)          ;; Orderless field separator
-;;   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-;;   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-;;   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-;;   ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
-;;   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-;;   ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
-;;   ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+(use-package corfu
+  ;; Optional customizations
+  ;; :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  ;; (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-echo-documentation nil) ;; Disable documentation in the echo area
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
 
-;;   ;; Enable Corfu only for certain modes.
-;;   ;; :hook ((prog-mode . corfu-mode)
-;;   ;;        (shell-mode . corfu-mode)
-;;   ;;        (eshell-mode . corfu-mode))
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
 
-;;   ;; Recommended: Enable Corfu globally.
-;;   ;; This is recommended since Dabbrev can be used globally (M-/).
-;;   ;; See also `corfu-excluded-modes'.
-;;   :init
-;;   (global-corfu-mode))
+  ;; Recommended: Enable Corfu globally.
+  ;; This is recommended since Dabbrev can be used globally (M-/).
+  ;; See also `corfu-excluded-modes'.
+  :ensure t
+  :init
+  (global-corfu-mode))
 
 
+
+
+(use-package flyspell
+  :hook ((text-mode . flyspell-mode)
+	 (prog-mode . flyspell-prog-mode)))
 
 ;; A few more useful configurations...
 (use-package emacs
   :init
-  ;; TAB cycle if there are only few candidates
+  ;; cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
-
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
   ;; (setq read-extended-command-predicate
@@ -207,7 +217,9 @@
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
+
 (use-package vertico
+  :ensure t
   :config
   (vertico-mode))
 
@@ -229,6 +241,7 @@
   (savehist-mode))
 
 (use-package tree-sitter
+  :ensure t
   :config
   (global-tree-sitter-mode))
 
@@ -238,9 +251,11 @@
   :config (recentf-mode))
 
 (use-package which-key
+  :ensure t
   :config (which-key-mode))
 
 (use-package magit
+  :ensure t
   :bind (("C-x g" . magit-status)))
   
 
@@ -272,14 +287,15 @@
     (setf LaTeX-label-alist (cl-list* '("lemma" . "lem:") '("theorem" . "thm:") '("definition" . "def:") '("corollary" . "cor:") LaTeX-label-alist))))
 
 (use-package reftex
+  :ensure t
   :after latex
   :hook ((LaTeX-mode . reftex-mode))
   :init (setq reftex-plug-into-AUCTeX t)
   :config
   (add-to-list 'reftex-label-alist '("theorem" ?h "thm:" "~\\ref{%s}" t ("Theorem" "theorem") nil) )  
-  (add-to-list 'reftex-label-alist '("definition" ?d "def:" "~ref{%s}" t ("Definition" "definition") nil) )  
-  (add-to-list 'reftex-label-alist '("corollary" ?c "cor:" "~ref{%s}" t ("Corollary" "corollary") nil) )
-  (add-to-list 'reftex-label-alist '("lemma" ?m "lem:" "~ref{%s}" t ("Lemma" "lemma") nil) )
+  (add-to-list 'reftex-label-alist '("definition" ?d "def:" "~\\ref{%s}" t ("Definition" "definition") nil) )  
+  (add-to-list 'reftex-label-alist '("corollary" ?c "cor:" "~\\ref{%s}" t ("Corollary" "corollary") nil) )
+  (add-to-list 'reftex-label-alist '("lemma" ?m "lem:" "~\\ref{%s}" t ("Lemma" "lemma") nil) )
   (reftex-reset-mode))
 
 (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
@@ -296,39 +312,17 @@
 ;;   :commands lsp)
 
 (use-package apheleia
+  :ensure t
   :config (apheleia-global-mode +1))
 
 (use-package gap
   :mode (("\\.g\\'" . gap-mode)
 	 ("\\.gap\\'" . gap-mode))
-  :custom ((gap-executable "/usr/bin/gap")
-	   (gap-start-options '("-f" "-b" "-m" "-E" "2m"))))
-
-(use-package mu4e
-  :init (setq mu4e-user-mail-address-list '("jaf150@uclive.ac.nz")
-	      mu4e-maildir-shortcuts '(("/uni/inbox" . ?i))
-	      send-mail-function 'smtpmail-send-it
-	      
-	      mu4e-get-mail-command "mbsync uni")
-  
-  :config
-  (add-hook 'mu4e-compose-mode-hook #'turn-off-auto-fill)
-  (setq mu4e-contexts `(,(make-mu4e-context
-				:name "uni"
-				:vars '((user-mail-address . "jake.faulkner@pg.canterbury.ac.nz")
-					(smtpmail-smtp-user . "jaf150@uclive.ac.nz")
-						      (smtpmail-smtp-service . 1025)
-
-						      (smtpmail-smtp-server . "localhost")
-
-					
-					
-					(user-full-name . "Jake Faulkner"))
-				:match-func (lambda (msg)
-					      (when msg
-						(mu4e-message-contact-field-matches msg
-										    :to "jaf150@uclive.ac.nz")))))))
-
+  :custom  ((gap-start-options '("-f" "-b" "-m" "2m" "-E")))
+  :ensure gap-mode
+  :init
+  (setq gap-executable "/usr/bin/gap"
+	gap-electric-equals nil))
 
 (use-package dumb-jump
   :ensure t
@@ -343,6 +337,21 @@
   :ensure t
   :init
   (add-hook 'latex-mode-hook #'eglot-mode))
+
+(use-package maxima
+  :ensure t
+  :init
+  (add-hook 'maxima-mode-hook #'maxima-hook-function)
+  (add-hook 'maxima-inferior-mode-hook #'maxima-hook-function)
+  (setq
+   org-format-latex-options (plist-put org-format-latex-options :scale 2.0)
+   maxima-display-maxima-buffer nil)
+  :mode ("\\.mac\\'" . maxima-mode)
+  :interpreter ("maxima" . maxima-mode))
+
+(use-package slime
+  :ensure t
+  :init (setq inferior-lisp-program "sbcl"))
 
 (use-package exec-path-from-shell
   :ensure t
@@ -390,7 +399,7 @@
       (progn (backward-delete-char 1) (forward-char))))
 
 (global-auto-revert-mode t)
-(global-set-key (kbd "<tab>") 'hippie-expand)
+(global-set-key (kbd "M-/") 'hippie-expand)
 
 
 
@@ -408,6 +417,7 @@
 
 
 (setq-default abbrev-mode t)
+(add-hook 'prog-mode-hook (lambda () (abbrev-mode -1)))
 (setq abbrev-file-name "~/.emacs.d/abbrev.el")
 
 (global-unset-key (kbd "<down-mouse-1>"))
@@ -415,3 +425,26 @@
 (global-unset-key (kbd "<down-mouse-3>"))
 (global-unset-key (kbd "<mouse-3>"))
 (winner-mode 1)
+(defun smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+(global-set-key [remap move-beginning-of-line] 'smarter-move-beginning-of-line)
