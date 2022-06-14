@@ -1,4 +1,3 @@
- (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -12,10 +11,8 @@
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
-(toggle-frame-fullscreen)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
 (load-theme 'modus-operandi t)
 
 (use-package nano-theme
@@ -156,7 +153,13 @@
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<"))
 
-
+(use-package smudge
+  :ensure t
+  :init (setq smudge-oauth2-client-id "206d72eda21c41faa8d910a1167b1782"
+	      smudge-oauth2-client-secret "5690debae4304888bacc5f929c4cf95a")
+  :config
+  (define-key smudge-mode-map (kbd "C-c ,") 'smudge-command-map)
+  (global-smudge-remote-mode))
 (use-package which-key
   :ensure t
   :config (which-key-mode))
@@ -188,7 +191,7 @@
   ;; Enable Corfu only for certain modes.
   ;; :hook ((prog-mode . corfu-mode)
   ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
+  ;;        (eshell-mode . corfu-mode))s
 
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since Dabbrev can be used globally (M-/).
@@ -277,7 +280,7 @@
   :hook ((LaTeX-mode . turn-on-auto-fill)
 	 (LaTeX-mode . LaTeX-math-mode)
 	 (latex-mode . flymake-mode)
-	 (LaTeX-mode . jake/theorem-environments))
+	 (LaTeX-mode . jake/rem-environments))
   :config
   (defun jake/theorem-environments ()
     (LaTeX-add-environments '("theorem"  LaTeX-env-label)
@@ -285,6 +288,17 @@
 			    '("definition" LaTeX-env-label)
 			    '("corollary" LaTeX-env-label))
     (setf LaTeX-label-alist (cl-list* '("lemma" . "lem:") '("theorem" . "thm:") '("definition" . "def:") '("corollary" . "cor:") LaTeX-label-alist))))
+
+(use-package cdlatex
+  :ensure t
+  :hook ((LaTeX-mode . cdlatex-mode))
+  :init (defun add-labelled-env (environment shortcut)
+	  (add-to-list 'cdlatex-env-alist (list environment (format "\\begin{%s}\nAUTOLABEL\n?\n\\end{%s}" environment environment) nil))
+	  (add-to-list 'cdlatex-command-alist (list shortcut (format "Insert %s env" environment) "" 'cdlatex-environment (list environment) t nil)))
+  :config
+  
+  (dolist (kv '(("theorem" "thm") ("definition" "def") ("corollary" "cor") ("lemma" "lem")))
+	    (add-labelled-env (car kv) (cadr kv))))
 
 (use-package reftex
   :ensure t
