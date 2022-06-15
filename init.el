@@ -49,9 +49,6 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-;; (use-package org
-;;   :init )
-
 
 
 (use-package consult
@@ -314,17 +311,6 @@
 
 (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
 
-
-;; (use-package lsp-mode
-;;   :init
-;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   :hook (
-;; 	 (latex-mode . lsp)
-;;          ;; if you want whianoch-key integration
-;;          (lsp-mode . lsp-enable-which-key-integration))
-;;   :commands lsp)
-
 (use-package apheleia
   :ensure t
   :config (apheleia-global-mode +1))
@@ -413,9 +399,6 @@
       (progn (backward-delete-char 1) (forward-char))))
 
 (global-auto-revert-mode t)
-(global-set-key (kbd "M-/") 'hippie-expand)
-
-
 
 (defadvice he-substitute-string (after he-paredit-fix)
   "remove extra paren when expanding line in paredit."
