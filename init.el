@@ -24,9 +24,10 @@
 (use-package org
   :init
   (setq org-agenda-files '("~/Sync/todo.org")
-	org-refile-targets '((nil . (:level . 1)) ("~/Sync/archive.org" . (:level . 1)))
+	org-refile-targets '((nil . (:maxlevel . 2)) ("~/Sync/archive.org" . (:level . 1)))
 	org-default-notes-file "~/Sync/todo.org"
-	org-directory "~/Sync")
+	org-directory "~/Sync"
+	org-hide-emphasis-markers t)
   
   (global-set-key (kbd "C-c l") #'org-store-link)
   (global-set-key (kbd "C-c a") #'org-agenda)
@@ -263,6 +264,11 @@
   :defer t
   :ensure t)
 
+(use-package pdf-tools
+  :ensure t
+  :init (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+	      TeX-source-correlate-start-server t))
+
 (use-package latex
   :ensure auctex
   :init
@@ -274,9 +280,10 @@
 	      TeX-command-extra-options "-shell-escape"
 	      TeX-master nil
 	      TeX-engine 'xetex)
-  :hook ((LaTeX-mode . turn-on-auto-fill)
+  :hook ((TeX-after-compilation-finished-functions . TeX-revert-document-buffer)
+	 (LaTeX-mode . turn-on-auto-fill)
 	 (LaTeX-mode . LaTeX-math-mode)
-	 (latex-mode . flymake-mode)
+	 (LaTeX-mode . flymake-mode)
 	 (LaTeX-mode . jake/rem-environments))
   :config
   (defun jake/theorem-environments ()
@@ -286,12 +293,26 @@
 			    '("corollary" LaTeX-env-label))
     (setf LaTeX-label-alist (cl-list* '("lemma" . "lem:") '("theorem" . "thm:") '("definition" . "def:") '("corollary" . "cor:") LaTeX-label-alist))))
 
+(global-prettify-symbols-mode)
+
+
 (use-package cdlatex
   :ensure t
-  :hook ((LaTeX-mode . cdlatex-mode))
   :init (defun add-labelled-env (environment shortcut)
 	  (add-to-list 'cdlatex-env-alist (list environment (format "\\begin{%s}\nAUTOLABEL\n?\n\\end{%s}" environment environment) nil))
 	  (add-to-list 'cdlatex-command-alist (list shortcut (format "Insert %s env" environment) "" 'cdlatex-environment (list environment) t nil)))
+    (defun jake/cdlatex-hook ()
+      
+      (cdlatex-mode)
+      ;; Fixing #35 on github, cdlatex-takeover-parenthesis doesn't work...
+      (unbind-key "(" cdlatex-mode-map)
+      (unbind-key "{" cdlatex-mode-map)
+      (unbind-key "[" cdlatex-mode-map))
+    (add-to-list 'cdlatex-math-modify-alist
+ '(115 "\\mathbb" nil t nil nil))
+    (add-hook 'LaTeX-mode-hook 'jake/cdlatex-hook)
+  (setq cdlatex-use-dollar-to-ensure-math nil)
+  
   :config
   
   (dolist (kv '(("theorem" "thm") ("definition" "def") ("corollary" "cor") ("lemma" "lem")))
