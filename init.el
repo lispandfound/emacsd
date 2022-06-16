@@ -283,7 +283,6 @@
   :hook ((TeX-after-compilation-finished-functions . TeX-revert-document-buffer)
 	 (LaTeX-mode . turn-on-auto-fill)
 	 (LaTeX-mode . LaTeX-math-mode)
-	 (LaTeX-mode . flymake-mode)
 	 (LaTeX-mode . jake/rem-environments))
   :config
   (defun jake/theorem-environments ()
@@ -371,7 +370,7 @@
 (use-package eglot
   :ensure t
   :init
-  (add-hook 'latex-mode-hook #'eglot-mode))
+  (add-hook 'LaTeX-mode-hook #'eglot-ensure))
 
 (use-package maxima
   :ensure t
@@ -391,6 +390,13 @@
 (use-package exec-path-from-shell
   :ensure t
   :init (exec-path-from-shell-initialize))
+
+(use-package flymake-collection
+  :ensure t
+  :hook (after-init . flymake-collection-hook-setup)
+  :init
+  (add-hook 'LaTeX-mode-hook (lambda () (add-hook 'flymake-diagnostic-functions 'flymake-collection-proselint nil t) (flymake-mode))))
+
 (add-hook 'prog-mode-hook #'flymake-mode)
 
 (use-package citar
