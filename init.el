@@ -331,6 +331,20 @@
 (use-package popwin
   :ensure t
   :config
+  (defun popup-eshell ()
+    (interactive)
+    (let* ((parent (if (buffer-file-name)
+		      (file-name-directory (buffer-file-name))
+		     default-directory))
+	   (name (format "*eshell-popup:%s*" parent))
+	   (buf-exists (get-buffer name))
+	   (new-buf (get-buffer-create name)))
+      (with-current-buffer new-buf
+	(when (null buf-exists)
+	  (eshell-mode))
+	(popwin:popup-buffer new-buf))))
+
+  (global-set-key (kbd "C-c .") #'popup-eshell)
   (popwin-mode 1))
 
 (use-package eglot
