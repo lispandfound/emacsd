@@ -307,13 +307,13 @@
       (unbind-key "(" cdlatex-mode-map)
       (unbind-key "{" cdlatex-mode-map)
       (unbind-key "[" cdlatex-mode-map))
-    (add-to-list 'cdlatex-math-modify-alist
- '(115 "\\mathbb" nil t nil nil))
+    
     (add-hook 'LaTeX-mode-hook 'jake/cdlatex-hook)
   (setq cdlatex-use-dollar-to-ensure-math nil)
   
   :config
-  
+  (add-to-list 'cdlatex-math-modify-alist
+ '(115 "\\mathbb" nil t nil nil))
   (dolist (kv '(("theorem" "thm") ("definition" "def") ("corollary" "cor") ("lemma" "lem")))
 	    (add-labelled-env (car kv) (cadr kv))))
 
