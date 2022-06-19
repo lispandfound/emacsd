@@ -13,14 +13,17 @@
 (load custom-file)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(load-theme 'modus-operandi t)
+
 
 (use-package nano-theme
   :ensure t
-  :config
+  :init
   (setq nano-fonts-use t)
+  :config
+  (require 'nano-light-theme)
+  (nano-theme 'light)
+  (load-theme 'nano-light t)
   (nano-mode))
-
 (use-package org
   :init
   (setq org-agenda-files '("~/Sync/todo.org")
@@ -151,13 +154,6 @@
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<"))
 
-(use-package smudge
-  :ensure t
-  :init (setq smudge-oauth2-client-id "206d72eda21c41faa8d910a1167b1782"
-	      smudge-oauth2-client-secret "5690debae4304888bacc5f929c4cf95a")
-  :config
-  (define-key smudge-mode-map (kbd "C-c ,") 'smudge-command-map)
-  (global-smudge-remote-mode))
 (use-package which-key
   :ensure t
   :config (which-key-mode))
@@ -280,10 +276,12 @@
 	      TeX-command-extra-options "-shell-escape"
 	      TeX-master nil
 	      TeX-engine 'xetex)
+  :flymake-hook (LaTeX-mode
+		 flymake-collection-proselint)
   :hook ((TeX-after-compilation-finished-functions . TeX-revert-document-buffer)
 	 (LaTeX-mode . turn-on-auto-fill)
 	 (LaTeX-mode . LaTeX-math-mode)
-	 (LaTeX-mode . jake/rem-environments))
+	 	 (LaTeX-mode . jake/rem-environments))
   :config
   (defun jake/theorem-environments ()
     (LaTeX-add-environments '("theorem"  LaTeX-env-label)
@@ -405,8 +403,8 @@
          ("M-b" . citar-insert-preset))
   :ensure t
   :custom
-  ((citar-bibliography '("~/notes/bibliography/bibliography.bib"))
-   (citar-library-paths '("~/notes/bibliography/pdfs"))))
+  ((citar-bibliography '("~/Sync/bibliography/bibliography.bib"))
+   (citar-library-paths '("~/Sync/bibliography/pdfs"))))
 
 (setq
  sentence-end-double-space nil
@@ -463,6 +461,7 @@
 (global-unset-key (kbd "<down-mouse-3>"))
 (global-unset-key (kbd "<mouse-3>"))
 (winner-mode 1)
+
 (defun smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
