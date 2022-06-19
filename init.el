@@ -407,6 +407,7 @@
    (citar-library-paths '("~/Sync/bibliography/pdfs"))))
 
 (setq
+ dired-dwim-target t
  sentence-end-double-space nil
  tab-always-indent 'complete
  inhibit-startup-screen t
@@ -485,3 +486,4 @@ point reaches the beginning or end of the buffer, stop there."
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
 (global-set-key [remap move-beginning-of-line] 'smarter-move-beginning-of-line)
+(set-fontset-font t nil (font-spec :size 110 :name "Symbola"))

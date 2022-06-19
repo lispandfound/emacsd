@@ -18,7 +18,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(nano-italic ((t (:family "Victor Mono" :slant italic :height 110 :weight regular))))
- '(nano-mono ((t (:weight light :height 110 :family "Roboto Mono"))))
+ '(nano-mono ((t (:weight light :height 110 :family "RobotoMono Nerd Font"))))
  '(nano-mono-alt ((t (:weight light :height 110 :family "Fira Code"))))
  '(nano-sans ((t (:weight light :height 110 :family "Roboto"))))
  '(nano-serif ((t (:weight light :height 110 :family "Roboto Slab")))))
