@@ -31,7 +31,6 @@
 	org-default-notes-file "~/Sync/todo.org"
 	org-directory "~/Sync"
 	org-hide-emphasis-markers t)
-  
   (global-set-key (kbd "C-c l") #'org-store-link)
   (global-set-key (kbd "C-c a") #'org-agenda)
   (global-set-key (kbd "C-c c") #'org-capture)
@@ -260,11 +259,6 @@
   :defer t
   :ensure t)
 
-(use-package pdf-tools
-  :ensure t
-  :init (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
-	      TeX-source-correlate-start-server t))
-
 (use-package latex
   :ensure auctex
   :init
@@ -340,6 +334,7 @@
   :ensure gap-mode
   :init
   (setq gap-executable "/usr/bin/gap"
+	gap-electric-semicolon nil
 	gap-electric-equals nil))
 
 (use-package dumb-jump
@@ -363,6 +358,11 @@
 	(popwin:popup-buffer new-buf))))
 
   (global-set-key (kbd "C-c .") #'popup-eshell)
+  (push "*GAP Help*" popwin:special-display-config)
+  (push '("^CAPTURE-.+\*.org$" :regexp t) popwin:special-display-config)
+  (push '("*Org Select*" :height 0.2 :noselect nil :stick t) popwin:special-display-config)
+  (push '("*Org Agenda*" :height 15) popwin:special-display-config)
+  
   (popwin-mode 1))
 
 (use-package eglot
@@ -405,6 +405,21 @@
   :custom
   ((citar-bibliography '("~/Sync/bibliography/bibliography.bib"))
    (citar-library-paths '("~/Sync/bibliography/pdfs"))))
+
+(use-package hyperbole
+  :ensure t
+  :config (hyperbole-mode 1))
+
+(use-package visual-regexp-steroids
+  :ensure t
+  :bind (("C-c r" . 'vr/replace)
+	 ("C-s" . 'vr/isearch-forward)
+	 ("C-r" . 'vr/isearch-backward)))
+
+(use-package avy
+  :ensure t
+  :bind (("C->" . 'avy-goto-char-timer))
+  :init (setq avy-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n ?s)))
 
 (setq
  dired-dwim-target t
@@ -487,3 +502,4 @@ point reaches the beginning or end of the buffer, stop there."
       (move-beginning-of-line 1))))
 (global-set-key [remap move-beginning-of-line] 'smarter-move-beginning-of-line)
 (set-fontset-font t nil (font-spec :size 110 :name "Symbola"))
+(info-initialize)
