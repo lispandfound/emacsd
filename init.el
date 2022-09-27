@@ -134,6 +134,12 @@
   (add-hook 'org-mode-hook #'org-indent-mode)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
   )
+
+;; (use-package xenops
+;;   :ensure t
+;;   :hook (org-mode . #'xenops-mode)
+;;   :custom ((xenops-reveal-on-entry t)))
+
 (use-package oc-biblatex
   :init (setq org-cite-export-processors '((latex biblatex) (t csl))))
 (require 'tramp)
@@ -167,10 +173,15 @@
   (setq cdlatex-use-dollar-to-ensure-math nil)
   
   :config
+  
+  (add-hook 'cdlatex-mode-hook
+	    (lambda () (when (eq major-mode 'org-mode)
+			 (make-local-variable 'org-pretty-entities-include-sub-superscripts)
+			 (setq org-pretty-entities-include-sub-superscripts nil))))
   (add-to-list 'cdlatex-math-modify-alist
 	       '(115 "\\mathbb" nil t nil nil))
   (dolist (kv '(("theorem" "thm") ("definition" "def") ("corollary" "cor") ("lemma" "lem")))
-	    (add-labelled-env (car kv) (cadr kv))))
+    (add-labelled-env (car kv) (cadr kv))))
 
 (electric-pair-mode t)
 (electric-indent-mode t)
