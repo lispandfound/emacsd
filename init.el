@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -16,98 +17,17 @@
 (scroll-bar-mode -1)
 (load-theme 'modus-operandi)
 
-(use-package meow
+(use-package expand-region
   :ensure t
-  :custom (meow-use-clipboard  t)
-  :config
-  (defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
-  (meow-leader-define-key
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-motion-overwrite-define-key
-   ;; custom keybinding for motion state
-   '("<escape>" . ignore))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("<" . meow-beginning-of-thing)
-   '(">" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-line)
-   '("E" . meow-goto-line)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-join)
-   '("k" . meow-kill)
-   '("l" . meow-till)
-   '("m" . meow-mark-word)
-   '("M" . meow-mark-symbol)
-   '("n" . meow-next)
-   '("N" . meow-next-expand)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-prev)
-   '("P" . meow-prev-expand)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-search)
-   '("t" . meow-right)
-   '("T" . meow-right-expand)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-next-word)
-   '("W" . meow-next-symbol)
-   '("x" . meow-save)
-   '("X" . meow-sync-grab)
-   '("y" . meow-yank)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
-  (meow-setup)
-  (meow-global-mode))
+  :bind (("C-<return>" . er/expand-region)))
 
 (use-package org
   :init
-  
+
   (setq org-agenda-files '("~/Sync/todo.org")
 	org-stuck-projects '("+LEVEL=2+PROJECT" ("TODO") nil "")
+
+	org-latex-pdf-process (list "latexmk -output-directory=%o -f -pdf %f")
 	org-capture-templates '(("t" "Personal todo" entry
                                  (file+headline "~/Sync/todo.org" "Inbox")
                                  "* TODO %?\n%i\n" :prepend t)
@@ -125,6 +45,7 @@
         org-superstar-headline-bullets-list '(" ")
         org-attach-id-dir ".attach"
         org-ellipsis ""
+	org-export-in-background t
 	org-highlight-latex-and-related '(script entities)
         org-agenda-block-separator "")
   
@@ -134,6 +55,15 @@
   (global-set-key (kbd "C-c c") #'org-capture)
   (add-hook 'org-mode-hook #'org-indent-mode)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
+  (add-hook 'org-mode-hook #'visual-line-mode)
+  (defun biblatex-setup ()
+    (bibtex-set-dialect 'biblatex))
+  (add-hook 'org-mode-hook #'biblatex-setup)
+  :config
+  (add-to-list 'org-structure-template-alist '("t" . "theorem"))
+  (add-to-list 'org-structure-template-alist '("ll" . "lemma"))
+  (add-to-list 'org-structure-template-alist '("p" . "proof"))
+  (add-to-list 'org-structure-template-alist '("r" . "result"))
   )
 
 ;; (use-package xenops
@@ -326,6 +256,10 @@
     (define-key org-mode-map (kbd "C-c C-j") #'org-element-transient)))
 (use-package emacs
   :init
+
+
+
+
    (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
@@ -357,6 +291,7 @@
    ring-bell-function 'ignore
    linum-format "%4d "
    ispell-alternate-dictionary "/usr/share/dict/words"
+   ispell-program-name "hunspell"
    backup-by-copying t                                        ; Avoid symlinks
    delete-old-versions t
    kept-new-versions 6
@@ -598,3 +533,58 @@
   ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
+
+
+
+(use-package citar
+  :bind (("C-c b" . citar-insert-citation)
+         :map minibuffer-local-map
+         ("M-b" . citar-insert-preset))
+  :ensure t
+  :custom
+  ((citar-bibliography '("~/Sync/bibliography/bibliography.bib"))
+   (citar-library-paths '("~/Sync/bibliography/pdfs/"))))
+
+
+(use-package citar-embark
+  :after citar embark
+  :ensure t
+  :no-require
+  :config (citar-embark-mode))
+
+(with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
+					       '("book"
+						 "\\documentclass{book}"
+						 ("\\chapter{%s}" . "\\chapter*{%s}")
+						 ("\\section{%s}" . "\\section*{%s}")
+						 ("\\subsection{%s}" . "\\subsection*{%s}")
+						 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+
+
+(use-package avy
+  :ensure t
+  :custom (avy-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n ?s))
+  :bind (("s-<return>" . avy-goto-char-2)))
+(defun eval-after-load-all (my-features form)
+  "Run FORM after all MY-FEATURES are loaded.
+See `eval-after-load' for the possible formats of FORM."
+  (if (null my-features)
+      (if (functionp form)
+      (funcall form)
+    (eval form))
+    (eval-after-load (car my-features)
+      `(lambda ()
+     (eval-after-load-all
+      (quote ,(cdr my-features))
+      (quote ,form))))))
+
+(eval-after-load-all '(embark consult org)
+		     (lambda ()
+		       (defun consult-org-store-link (candidate)
+			 (save-excursion
+			   (goto-char (get-text-property 0 'consult--candidate candidate))
+			   (org-store-link nil t)))
+		       (embark-define-keymap embark-consult-org-heading
+			 "Consult Org Embark Bindings"
+			 ("n" consult-org-store-link))
+		       (add-to-list 'embark-keymap-alist '(consult-org-heading . embark-consult-org-heading))))
