@@ -19,7 +19,13 @@
 
 (use-package expand-region
   :ensure t
-  :bind (("C-<return>" . er/expand-region)))
+  :bind (("C-<return>" . er/expand-region))
+  :config
+  (load "expand-org.el"))
+(use-package org-appear
+  :ensure t
+  :hook (org-mode . org-appear-mode)
+  )
 
 (use-package org
   :init
@@ -256,11 +262,8 @@
     (define-key org-mode-map (kbd "C-c C-j") #'org-element-transient)))
 (use-package emacs
   :init
-
-
-
-
-   (defun crm-indicator (args)
+  (add-hook 'after-init-hook #'repeat-mode)
+  (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
