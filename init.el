@@ -16,6 +16,14 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (load-theme 'modus-operandi)
+(use-package moody
+  :ensure t
+  :config
+  (setq x-underline-at-descent-line t)
+  (moody-replace-vc-mode)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-eldoc-minibuffer-message-function))
+
 
 (use-package expand-region
   :ensure t
@@ -84,7 +92,15 @@
    tramp-methods)
 
 
-
+(use-package smartparens
+  :ensure t
+  :hook (after-init . smartparens-global-strict-mode)
+  :config
+  (setq sp-highlight-pair-overlay nil
+	sp-highlight-wrap-overlay nil
+	sp-highlight-wrap-tag-overlay nil
+	sp-max-prefix-length 25)
+  (require 'smartparens-config))
 
 
 (use-package cdlatex
@@ -114,7 +130,7 @@
   (dolist (kv '(("theorem" "thm") ("definition" "def") ("corollary" "cor") ("lemma" "lem")))
     (add-labelled-env (car kv) (cadr kv))))
 
-(electric-pair-mode t)
+
 (electric-indent-mode t)
 
 (use-package magit
@@ -254,12 +270,10 @@
       ["Store"
        ("c" "Store Link" org-store-link :transient t)])
     (define-key org-mode-map (kbd "C-c C-j") #'org-element-transient)))
+
 (use-package emacs
   :init
-
-
-
-
+  (set-default-coding-systems 'utf-8)
    (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
@@ -313,17 +327,9 @@
   (global-auto-revert-mode t)
 
   (defadvice he-substitute-string (after he-paredit-fix)
-    "remove extra paren when expanding line in paredit"
-    (message str)
-    (message (and electric-pair-mode (equal (substring str -1) ")")))
-    (if (and electric-pair-mode (equal (substring str -1) ")"))
-	(progn (backward-delete-char 1) (forward-char))))
-  
-  
-  (defadvice he-substitute-string (after he-paredit-fix)
     "remove extra paren when expanding line in paredit."
 
-    (if (and electric-indent-mode (equal (substring str -1) ")"))
+    (if (and smartparens-mode (equal (substring str -1) ")"))
 	(progn
           (backward-delete-char 1)
           (forward-char))))
@@ -588,3 +594,6 @@ See `eval-after-load' for the possible formats of FORM."
 			 "Consult Org Embark Bindings"
 			 ("n" consult-org-store-link))
 		       (add-to-list 'embark-keymap-alist '(consult-org-heading . embark-consult-org-heading))))
+(use-package beacon
+  :ensure t
+  :hook (after-init . beacon-mode))
