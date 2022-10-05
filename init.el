@@ -1,4 +1,4 @@
-e;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t -*-
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -279,9 +279,38 @@ e;; -*- lexical-binding: t -*-
 
 (use-package emacs
   :init
+  (keyboard-translate ?\C-t ?\C-x)
+  (keyboard-translate ?\C-x ?\C-t)
+  (defun smarter-move-beginning-of-line (arg)
+    "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+    (interactive "^p")
+    (setq arg (or arg 1))
+
+    ;; Move lines first
+    (when (/= arg 1)
+      (let ((line-move-visual nil))
+	(forward-line (1- arg))))
+
+    (let ((orig-point (point)))
+      (back-to-indentation)
+      (when (= orig-point (point))
+	(move-beginning-of-line 1))))
+
+  ;; remap C-a to `smarter-move-beginning-of-line'
+  (global-set-key [remap move-beginning-of-line]
+                  'smarter-move-beginning-of-line)
+
   (add-hook 'after-init-hook #'repeat-mode)
   (set-default-coding-systems 'utf-8)
-   (defun crm-indicator (args)
+  (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
@@ -299,7 +328,7 @@ e;; -*- lexical-binding: t -*-
   ;; Vertico commands are hidden in normal buffers.
   ;; (setq read-extended-command-predicate
   ;;       #'command-completion-default-include-p)
-
+  (global-auto-revert-mode)
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t)
   (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
@@ -321,6 +350,7 @@ e;; -*- lexical-binding: t -*-
    auto-save-list-file-prefix emacs-tmp-dir
    completion-cycle-threshold 3
    tab-always-indent 'complete
+   initial-major-mode #'org-mode
    read-buffer-completion-ignore-case t
    read-file-name-completion-ignore-case t
    auto-save-file-name-transforms `((".*" ,emacs-tmp-dir t))  ; Change autosave dir to tmp
