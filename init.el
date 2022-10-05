@@ -2,7 +2,6 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
-
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -27,9 +26,10 @@
 
 (use-package expand-region
   :ensure t
-  :bind (("C-<return>" . er/expand-region))
+  :bind (("s-<return>" . er/expand-region))
   :config
-  (load "expand-org.el"))
+  (load (concat (expand-file-name user-emacs-directory) "expand-org.el")))
+
 (use-package org-appear
   :ensure t
   :hook (org-mode . org-appear-mode)
@@ -70,6 +70,7 @@
   (add-hook 'org-mode-hook #'org-indent-mode)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
   (add-hook 'org-mode-hook #'visual-line-mode)
+  (add-hook 'org-mode-hook #'abbrev-mode)
   (defun biblatex-setup ()
     (bibtex-set-dialect 'biblatex))
   (add-hook 'org-mode-hook #'biblatex-setup)
@@ -333,6 +334,7 @@ point reaches the beginning or end of the buffer, stop there."
   (setq enable-recursive-minibuffers t)
   (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
   (setq
+   initial-frame-alist '((fullscreen . fullscreen))
    dired-dwim-target t
    sentence-end-double-space nil
    tab-always-indent 'complete
@@ -372,8 +374,6 @@ point reaches the beginning or end of the buffer, stop there."
           (forward-char))))
   (global-set-key (kbd "M-/") 'hippie-expand)
   
-  (setq-default abbrev-mode t)
-  (add-hook 'prog-mode-hook (lambda () (abbrev-mode -1)))
   (setq abbrev-file-name "~/.emacs.d/abbrev.el")
   (info-initialize))
 
@@ -607,7 +607,7 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package avy
   :ensure t
   :custom (avy-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n ?s))
-  :bind (("s-<return>" . avy-goto-char-2)))
+  :bind (("s-\\" . avy-goto-char-2)))
 (defun eval-after-load-all (my-features form)
   "Run FORM after all MY-FEATURES are loaded.
 See `eval-after-load' for the possible formats of FORM."
