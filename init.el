@@ -29,7 +29,10 @@
   :bind (("s-<return>" . er/expand-region))
   :config
   (load (concat (expand-file-name user-emacs-directory) "expand-org.el")))
-
+(use-package embrace
+  :ensure t
+  :bind (("C-=" . embrace-commander))
+  :hook (org-mode . embrace-org-mode-hook))
 (use-package org-appear
   :ensure t
   :hook (org-mode . org-appear-mode)
