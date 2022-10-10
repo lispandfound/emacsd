@@ -66,7 +66,7 @@
 	org-highlight-latex-and-related '(script entities)
         org-agenda-block-separator "")
   
-  (add-hook 'org-mode-hook #'org-cdlatex-mode)
+  
   (global-set-key (kbd "C-c l") #'org-store-link)
   (global-set-key (kbd "C-c a") #'org-agenda)
   (global-set-key (kbd "C-c c") #'org-capture)
@@ -115,6 +115,7 @@
 
 (use-package cdlatex
   :ensure t
+  :hook (org-mode . org-cdlatex-mode)
   :init (defun add-labelled-env (environment shortcut)
 	  (add-to-list 'cdlatex-env-alist (list environment (format "\\begin{%s}\nAUTOLABEL\n?\n\\end{%s}" environment environment) nil))
 	  (add-to-list 'cdlatex-command-alist (list shortcut (format "Insert %s env" environment) "" 'cdlatex-environment (list environment) t nil)))
@@ -337,6 +338,10 @@ point reaches the beginning or end of the buffer, stop there."
   (setq enable-recursive-minibuffers t)
   (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
   (setq
+   completions-format 'one-column
+   completions-header-format nil
+   completions-max-height 20
+   completion-auto-select nil
    initial-frame-alist '((fullscreen . fullscreen))
    dired-dwim-target t
    sentence-end-double-space nil
@@ -367,7 +372,8 @@ point reaches the beginning or end of the buffer, stop there."
   (show-paren-mode 1)                       ; Show closing parens by default
   (delete-selection-mode 1)                 ; Selected text will be overwritten when you start typing
   (global-auto-revert-mode t)
-
+  (define-key minibuffer-mode-map (kbd "C-n") 'minibuffer-next-completion)
+  (define-key minibuffer-mode-map (kbd "C-p") 'minibuffer-prev-completion)
   (defadvice he-substitute-string (after he-paredit-fix)
     "remove extra paren when expanding line in paredit."
 
@@ -381,23 +387,23 @@ point reaches the beginning or end of the buffer, stop there."
   (info-initialize))
 
 
-(use-package vertico
-  :ensure t
-  :init
-  (vertico-mode)
+;; (use-package vertico
+;;   :ensure t
+;;   :init
+;;   (vertico-mode)
 
-  ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
+;;   ;; Different scroll margin
+;;   ;; (setq vertico-scroll-margin 0)
 
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
+;;   ;; Show more candidates
+;;   ;; (setq vertico-count 20)
 
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
+;;   ;; Grow and shrink the Vertico minibuffer
+;;   ;; (setq vertico-resize t)
 
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
-  )
+;;   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+;;   ;; (setq vertico-cycle t)
+;;   )
 
 
 (use-package savehist
@@ -533,16 +539,16 @@ point reaches the beginning or end of the buffer, stop there."
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
 )
 ;; Configure directory extension.
-(use-package vertico-directory
-  :after vertico
-  :ensure nil
-  ;; More convenient directory navigation commands
-  :bind (:map vertico-map
-              ("RET" . vertico-directory-enter)
-              ("DEL" . vertico-directory-delete-char)
-              ("M-DEL" . vertico-directory-delete-word))
-  ;; Tidy shadowed file names
-  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+;; (use-package vertico-directory
+;;   :after vertico
+;;   :ensure nil
+;;   ;; More convenient directory navigation commands
+;;   :bind (:map vertico-map
+;;               ("RET" . vertico-directory-enter)
+;;               ("DEL" . vertico-directory-delete-char)
+;;               ("M-DEL" . vertico-directory-delete-word))
+;;   ;; Tidy shadowed file names
+;;   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 (use-package marginalia
   :ensure t
