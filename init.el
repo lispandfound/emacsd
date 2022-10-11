@@ -1,4 +1,5 @@
 ;; -*- lexical-binding: t -*-
+(set-language-environment "UTF-8")
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -100,17 +101,6 @@
       (tramp-remote-shell "/bin/bash")
       (tramp-remote-shell-args ("-i") ("-c"))))
    tramp-methods)
-
-
-(use-package smartparens
-  :ensure t
-  :hook (after-init . smartparens-global-strict-mode)
-  :config
-  (setq sp-highlight-pair-overlay nil
-	sp-highlight-wrap-overlay nil
-	sp-highlight-wrap-tag-overlay nil
-	sp-max-prefix-length 25)
-  (require 'smartparens-config))
 
 
 (use-package cdlatex
@@ -286,6 +276,7 @@
   :init
   (keyboard-translate ?\C-t ?\C-x)
   (keyboard-translate ?\C-x ?\C-t)
+  (electric-pair-mode)
   (defun smarter-move-beginning-of-line (arg)
     "Move point back to indentation of beginning of line.
 
@@ -377,7 +368,7 @@ point reaches the beginning or end of the buffer, stop there."
   (defadvice he-substitute-string (after he-paredit-fix)
     "remove extra paren when expanding line in paredit."
 
-    (if (and smartparens-mode (equal (substring str -1) ")"))
+    (if (and electric-pair-mode (equal (substring str -1) ")"))
 	(progn
           (backward-delete-char 1)
           (forward-char))))
@@ -560,7 +551,7 @@ point reaches the beginning or end of the buffer, stop there."
 
   :bind
   (("C-," . embark-act)         ;; pick some comfortable binding
-   ("C-:" . embark-dwim)        ;; good alternative: M-.
+   ("M-." . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
   :init
@@ -643,3 +634,19 @@ See `eval-after-load' for the possible formats of FORM."
 (use-package beacon
   :ensure t
   :hook (after-init . beacon-mode))
+(use-package tempo
+  :custom (tempo-interactive t)
+  :bind (("M-g M-e" . tempo-forward-mark)
+	 ("M-g M-a" . tempo-backward-mark))
+  :defer nil
+  :config
+  (require 'tempo)
+  (defadvice tempo-define-template (after no-self-insert-in-abbrevs activate)
+    "Skip self-insert if template function is called by an abbrev."
+    (put (intern (concat "tempo-template-" (ad-get-arg 0))) 'no-self-insert t))
+  (load (concat user-emacs-directory "tempo.el")))
+ 
+(use-package visible-mark
+  :ensure t
+  :custom (visible-mark-max 3)
+  :hook (after-init . global-visible-mark-mode))
