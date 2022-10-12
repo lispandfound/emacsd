@@ -93,14 +93,14 @@
 (use-package oc-biblatex
   :init (setq org-cite-export-processors '((latex biblatex) (t csl))))
 (require 'tramp)
-  (push
-   (cons
-    "toolbox"
-    '((tramp-login-program "flatpak-spawn --host toolbox")
-      (tramp-login-args (("enter" "-c") ("%h")))
-      (tramp-remote-shell "/bin/bash")
-      (tramp-remote-shell-args ("-i") ("-c"))))
-   tramp-methods)
+(push
+ (cons
+  "toolbox"
+  '((tramp-login-program "flatpak-spawn --host toolbox")
+    (tramp-login-args (("enter" "-c") ("%h")))
+    (tramp-remote-shell "/bin/bash")
+    (tramp-remote-shell-args ("-i") ("-c"))))
+ tramp-methods)
 
 
 (use-package cdlatex
@@ -132,7 +132,7 @@
     (add-labelled-env (car kv) (cadr kv))))
 
 
-(electric-indent-mode t)
+
 
 (use-package magit
   :ensure t
@@ -167,19 +167,19 @@
   :ensure auctex
   :init
   (setq TeX-auto-save t
-	      TeX-parse-self t
-	      TeX-electric-math (cons "\\(" "\\)")
-	      LaTeX-electric-left-right-brace t
-	      TeX-electric-sub-and-superscript t
-	      TeX-command-extra-options "-shell-escape"
-	      TeX-master nil
-	      TeX-engine 'xetex)
+	TeX-parse-self t
+	TeX-electric-math (cons "\\(" "\\)")
+	LaTeX-electric-left-right-brace t
+	TeX-electric-sub-and-superscript t
+	TeX-command-extra-options "-shell-escape"
+	TeX-master nil
+	TeX-engine 'xetex)
   :flymake-hook (LaTeX-mode
 		 flymake-collection-proselint)
   :hook ((TeX-after-compilation-finished-functions . TeX-revert-document-buffer)
 	 (LaTeX-mode . turn-on-auto-fill)
 	 (LaTeX-mode . LaTeX-math-mode)
-	 	 (LaTeX-mode . jake/rem-environments))
+	 (LaTeX-mode . jake/rem-environments))
   :config
   (defun jake/theorem-environments ()
     (LaTeX-add-environments '("theorem"  LaTeX-env-label)
@@ -234,11 +234,73 @@
 	(popwin:popup-buffer new-buf))))
 
   (global-set-key (kbd "C-c .") #'popup-eshell)
-  (push "*GAP Help*" popwin:special-display-config)
-  (push '("*Embark Actions*" :height 0.2) popwin:special-display-config)
-  (push '("^CAPTURE-.+\*.org$" :regexp t) popwin:special-display-config)
-  (push '("*Select*" :height 0.2 :noselect nil :stick t) popwin:special-display-config)
-  (push '("*Org Agenda*" :height 15) popwin:special-display-config)
+  (defun popup-scratch ()
+    (interactive)
+      (popwin:popup-buffer (get-buffer "*scratch*")))
+  (global-set-key (kbd "C-c x") #'popup-scratch)
+  (setq popwin:special-display-config
+	(append popwin:special-display-config '(("*Help*" :height 0.4 :stick t)
+						("\\*.*" :regexp t :position bottom :noselect t :height 0.3 :stick t)
+						;; Debug
+						("*Warnings*" :position bottom :height 0.3 )
+						("*Backtrace*" :position bottom :height 0.3 )
+						("*Messages*" :position bottom :height 0.3 )
+						("*Compile-Log*" :position bottom :height 0.3 )
+						("*Shell Command Output*" :position bottom :height 0.3 )
+						(".*overtone.log" :regexp t :height 0.3)
+						("collected.org" :position top :height 15)
+						(flycheck-error-list-mode :position bottom :height 0.3 :stick t)
+						(compilation-mode :position bottom :height 0.3 :noselect t)
+						;; Utils
+						("helm" :regexp t :height 0.3)
+						("*Occur*" :position bottom :height 0.3)
+						("\\*Slime Description.*" :noselect t :regexp t :height 0.3)
+						("*undo-tree*" :width 0.3 :position right)
+						("*grep*" :position bottom :height 0.2 :stick t)
+						("*Completions*" :height 0.4)
+						("*compilation*" :height 0.4 :noselect t :stick t)
+						("*quickrun*" :height 0.3 :stick t)
+						;; Magit/vc
+						(magit-status-mode :position bottom :noselect t :height 0.3 :stick t)
+						("COMMIT_EDITMSG" :position bottom :noselect t :height 0.3 :stick t)
+						("*magit-commit*" :position bottom :noselect t :height 0.3 :stick t)
+						("\\*magit.*" :regexp t :position bottom :noselect t :height 0.3 :stick t)
+						("*magit-diff*" :position bottom :noselect t :height 0.3)
+						("*magit-edit-log*" :position bottom :noselect t :height 0.2)
+						("*magit-process*" :position bottom :noselect t :height 0.2)
+						("*vc-diff*" :position bottom :noselect t :height 0.2)
+						("*vc-change-log*" :position bottom :noselect t :height 0.2)
+						;; Navigator
+						("*Ibuffer*" :position bottom :height 0.2)
+						("*Ido Completions*" :noselect t :height 0.3)
+						("*imenu-tree*" :position left :width 50 :stick t)
+						("*gists*" :height 0.3)
+						("*sldb.*":regexp t :height 0.3)
+						("*Gofmt Errors*" :noselect t)
+						("\\*godoc*" :regexp t :height 0.3)
+						("*nrepl-error*" :height 0.2 :stick t)
+						("*nrepl-doc*" :height 0.2 :stick t)
+						("*nrepl-src*" :height 0.2 :stick t)
+						("*Kill Ring*" :height 0.3)
+						("*project-status*" :noselect t)
+						("*Compile-Log" :height 0.2 :stick t)
+						("*pytest*" :noselect t)
+						;; Programing
+						("Django:" :regexp t :width 0.3 :position right)
+						("*Python*" :stick t)
+						("*jedi:doc*" :noselect t)
+						;; Console
+						("*shell*" :height 0.3)
+						("\\*ansi-term.*\\*" :regexp t :height 0.3)
+						("\\*terminal.*\\*" :regexp t :height 0.3)
+						;; Org/Organized
+						(diary-fancy-display-mode :position left :width 50 :stick nil)
+						(diary-mode :position bottom :height 15 :stick t)
+						(calendar-mode :position bottom :height 15 :stick nil)
+						(org-agenda-mode :position bottom :height 15 :stick t)
+						("*Org Agenda.*\\*" :regexp t :position bottom :height 15 :stick t)
+						("^CAPTURE-.+\*.org$" :regexp t)
+						("*Select*" :height 0.2 :noselect nil :stick t))))
   (popwin-mode 1))
 
 (use-package eglot
@@ -277,6 +339,7 @@
   (keyboard-translate ?\C-t ?\C-x)
   (keyboard-translate ?\C-x ?\C-t)
   (electric-pair-mode)
+  (electric-indent-mode t)
   (defun smarter-move-beginning-of-line (arg)
     "Move point back to indentation of beginning of line.
 
@@ -528,7 +591,7 @@ point reaches the beginning or end of the buffer, stop there."
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-)
+  )
 ;; Configure directory extension.
 ;; (use-package vertico-directory
 ;;   :after vertico
@@ -596,12 +659,12 @@ point reaches the beginning or end of the buffer, stop there."
   :config (citar-embark-mode))
 
 (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
-					       '("book"
-						 "\\documentclass{book}"
-						 ("\\chapter{%s}" . "\\chapter*{%s}")
-						 ("\\section{%s}" . "\\section*{%s}")
-						 ("\\subsection{%s}" . "\\subsection*{%s}")
-						 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+					     '("book"
+					       "\\documentclass{book}"
+					       ("\\chapter{%s}" . "\\chapter*{%s}")
+					       ("\\section{%s}" . "\\section*{%s}")
+					       ("\\subsection{%s}" . "\\subsection*{%s}")
+					       ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 
 (use-package avy
@@ -613,13 +676,13 @@ point reaches the beginning or end of the buffer, stop there."
 See `eval-after-load' for the possible formats of FORM."
   (if (null my-features)
       (if (functionp form)
-      (funcall form)
-    (eval form))
+	  (funcall form)
+	(eval form))
     (eval-after-load (car my-features)
       `(lambda ()
-     (eval-after-load-all
-      (quote ,(cdr my-features))
-      (quote ,form))))))
+	 (eval-after-load-all
+	  (quote ,(cdr my-features))
+	  (quote ,form))))))
 
 (eval-after-load-all '(embark consult org)
 		     (lambda ()
@@ -628,8 +691,8 @@ See `eval-after-load' for the possible formats of FORM."
 			   (goto-char (get-text-property 0 'consult--candidate candidate))
 			   (org-store-link nil t)))
 		       (embark-define-keymap embark-consult-org-heading
-			 "Consult Org Embark Bindings"
-			 ("n" consult-org-store-link))
+					     "Consult Org Embark Bindings"
+					     ("n" consult-org-store-link))
 		       (add-to-list 'embark-keymap-alist '(consult-org-heading . embark-consult-org-heading))))
 (use-package beacon
   :ensure t
@@ -645,7 +708,7 @@ See `eval-after-load' for the possible formats of FORM."
     "Skip self-insert if template function is called by an abbrev."
     (put (intern (concat "tempo-template-" (ad-get-arg 0))) 'no-self-insert t))
   (load (concat user-emacs-directory "tempo.el")))
- 
+
 (use-package visible-mark
   :ensure t
   :custom (visible-mark-max 3)
