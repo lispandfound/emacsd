@@ -5,4 +5,5 @@
 
 (define-abbrev emacs-lisp-mode-abbrev-table "lambda" "" 'tempo-template-lambda)
 (tempo-define-template "mm" '("\\(" p "\\)") nil "Template for mathematics in latex")
-(define-abbrev org-mode-abbrev-table "mm" "" 'tempo-template-mm)
+(with-eval-after-load 'org
+  (define-abbrev org-mode-abbrev-table "mm" "" 'tempo-template-mm))
