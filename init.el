@@ -295,8 +295,6 @@ point reaches the beginning or end of the buffer, stop there."
   (show-paren-mode 1)                       ; Show closing parens by default
   (delete-selection-mode 1)                 ; Selected text will be overwritten when you start typing
   (global-auto-revert-mode t)
-  (define-key minibuffer-mode-map (kbd "C-n") 'minibuffer-next-completion)
-  (define-key minibuffer-mode-map (kbd "C-p") 'minibuffer-prev-completion)
   (defadvice he-substitute-string (after he-paredit-fix)
     "remove extra paren when expanding line in paredit."
 
