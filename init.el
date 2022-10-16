@@ -253,7 +253,17 @@ point reaches the beginning or end of the buffer, stop there."
   ;; remap C-a to `smarter-move-beginning-of-line'
   (global-set-key [remap move-beginning-of-line]
                   'smarter-move-beginning-of-line)
-
+  (defun new-line-below ()
+    (interactive)
+    (end-of-line)
+    (newline-and-indent))
+  (defun new-line-above ()
+    (interactive)
+    (previous-line)
+    (end-of-line)
+    (newline-and-indent))
+  (global-set-key (kbd "<S-return>") #'new-line-below)
+  (global-set-key (kbd "<C-S-return>") #'new-line-above)
   (add-hook 'after-init-hook #'repeat-mode)
   (set-default-coding-systems 'utf-8)
   (defun crm-indicator (args)
