@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(backup-by-copying t)
- '(cdlatex-math-modify-alist '((115 "\\mathbb" "" nil nil nil)))
+ '(cdlatex-math-modify-alist '((115 "\\mathbb" "" t nil nil)))
  '(cdlatex-use-dollar-to-ensure-math nil)
  '(completion-category-overrides '((file (styles partial-completion))))
  '(completion-cycle-threshold 3)
@@ -93,7 +93,7 @@
    '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "KILL(k)")
      (sequence "[ ](T)" "[?](W)" "[P](P)" "|" "[X](D)" "[-](K)")))
  '(package-selected-packages
-   '(skempo citar consult eglot magit visible-mark embrace cdlatex tongbu beacon smartparens org-appear avy citar-embark moody expand-region embark-consult marginalia orderless vertico popwin gap-mode tree-sitter-langs tree-sitter auctex embark flymake-collection corfu which-key use-package))
+   '(skempo citar visible-mark embrace cdlatex tongbu beacon smartparens org-appear avy citar-embark moody expand-region embark-consult orderless vertico popwin gap-mode tree-sitter-langs tree-sitter auctex embark flymake-collection corfu which-key))
  '(popwin:special-display-config
    '(("*Help*" :height 0.4 :stick t)
      ("*Warnings*" :height 0.3 :position bottom)
