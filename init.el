@@ -26,7 +26,7 @@
 
 (use-package expand-region
   :ensure t
-  :bind (("s-<return>" . er/expand-region))
+  :bind (("C-<return>" . er/expand-region))
   :config
   (load (concat (expand-file-name user-emacs-directory) "expand-org.el")))
 (use-package embrace
