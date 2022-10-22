@@ -13,9 +13,13 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 (tool-bar-mode -1)
+
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
-(load-theme 'modus-operandi)
+(when (window-system)
+(scroll-bar-mode -1))
+(if (window-system)
+    (load-theme 'modus-operandi)
+  (load-theme 'modus-vivendi))
 (use-package moody
   :ensure t
   :config
@@ -26,7 +30,7 @@
 
 (use-package expand-region
   :ensure t
-  :bind (("C-<return>" . er/expand-region))
+  :commands (er/expand-region)
   :config
   (load (concat (expand-file-name user-emacs-directory) "expand-org.el")))
 (use-package embrace
@@ -69,6 +73,8 @@
    '("3" . meow-expand-3)
    '("2" . meow-expand-2)
    '("1" . meow-expand-1)
+   '("/" . isearch-forward)
+   '("<RET>" . er/expand-region)
    '("-" . negative-argument)
    '(";" . meow-reverse)
    '("," . meow-inner-of-thing)
@@ -121,7 +127,7 @@
    '("'" . repeat)
    '("<escape>" . ignore)))
   (meow-setup)
-  (global-meow-mode 1))
+  (meow-global-mode 1))
 (use-package cape
   :ensure t)
 
@@ -614,9 +620,7 @@ See `eval-after-load' for the possible formats of FORM."
     (put (intern (concat "tempo-template-" (ad-get-arg 0))) 'no-self-insert t))
   (load (concat user-emacs-directory "tempo.el")))
 
-(use-package visible-mark
-  :ensure t
-  :hook (after-init . global-visible-mark-mode))
+
 (use-package vertico
   :ensure t
   :init

@@ -26,6 +26,7 @@
  '(ispell-alternate-dictionary "/usr/share/dict/words")
  '(ispell-program-name "hunspell")
  '(kept-new-versions 6)
+ '(meow-use-cursor-position-hack t)
  '(minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
  '(org-M-RET-may-split-line '((default)))
  '(org-agenda-block-separator "")
@@ -34,10 +35,14 @@
  '(org-capture-templates
    '(("t" "Personal todo" entry
       (file+headline "~/Sync/todo.org" "Inbox")
-      "* TODO %?\12%i\12" :prepend t)
+      "* TODO %?
+%i
+" :prepend t)
      ("n" "Personal notes" entry
       (file+headline "~/Sync/notes.org" "Inbox")
-      "* %u %?\12%i\12" :prepend t)))
+      "* %u %?
+%i
+" :prepend t)))
  '(org-cite-export-processors '((latex biblatex nil nil) (t csl nil nil)))
  '(org-default-notes-file "~/Sync/todo.org")
  '(org-directory "~/Sync/")
