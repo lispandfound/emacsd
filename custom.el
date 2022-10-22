@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Info-default-directory-list '("/app/share/info"))
  '(backup-by-copying t)
  '(cdlatex-math-modify-alist '((115 "\\mathbb" "" t nil nil)))
  '(cdlatex-use-dollar-to-ensure-math nil)
@@ -93,7 +94,7 @@
    '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "KILL(k)")
      (sequence "[ ](T)" "[?](W)" "[P](P)" "|" "[X](D)" "[-](K)")))
  '(package-selected-packages
-   '(skempo citar visible-mark embrace cdlatex tongbu beacon smartparens org-appear avy citar-embark moody expand-region embark-consult orderless vertico popwin gap-mode tree-sitter-langs tree-sitter auctex embark flymake-collection corfu which-key))
+   '(meow cape skempo citar visible-mark embrace cdlatex tongbu beacon smartparens org-appear avy citar-embark moody expand-region embark-consult orderless popwin gap-mode tree-sitter-langs tree-sitter auctex embark flymake-collection which-key))
  '(popwin:special-display-config
    '(("*Help*" :height 0.4 :stick t)
      ("*Warnings*" :height 0.3 :position bottom)
