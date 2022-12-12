@@ -3,9 +3,7 @@
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+
 
 (eval-when-compile
   (require 'use-package))
@@ -41,93 +39,6 @@
   :ensure t
   :hook (org-mode . org-appear-mode)
   )
-(use-package meow
-  :ensure t
-  :config
-  (defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-dvorak)
-  (meow-leader-define-key
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-motion-overwrite-define-key
-   ;; custom keybinding for motion state
-   '("<escape>" . ignore))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("/" . isearch-forward)
-   '("<RET>" . er/expand-region)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("<" . meow-beginning-of-thing)
-   '(">" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-line)
-   '("E" . meow-goto-line)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-join)
-   '("k" . meow-kill)
-   '("l" . meow-till)
-   '("m" . meow-mark-word)
-   '("M" . meow-mark-symbol)
-   '("n" . meow-next)
-   '("N" . meow-next-expand)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-prev)
-   '("P" . meow-prev-expand)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-search)
-   '("t" . meow-right)
-   '("T" . meow-right-expand)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-next-word)
-   '("W" . meow-next-symbol)
-   '("x" . meow-save)
-   '("X" . meow-sync-grab)
-   '("y" . meow-yank)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
-  (meow-setup)
-  (meow-global-mode 1))
 (use-package cape
   :ensure t)
 
@@ -241,13 +152,9 @@
   :after latex
   :hook ((LaTeX-mode . reftex-mode)))
 
-(use-package tree-sitter
-  :ensure t
-  :config
-  (global-tree-sitter-mode))
 
-(use-package tree-sitter-langs
-  :ensure t)
+
+
 
 (use-package gap
   :mode (("\\.g\\'" . gap-mode)
@@ -284,9 +191,9 @@
   (popwin-mode 1))
 
 (use-package eglot
-  :ensure t
   :init
-  (add-hook 'LaTeX-mode-hook #'eglot-ensure))
+  (add-hook 'LaTeX-mode-hook #'eglot-ensure)
+  )
 (use-package recentf
   :config (recentf-mode))
 
@@ -306,7 +213,7 @@
        ("TAB" "Cycle Visibility" org-cycle :transient t)
        ("RET" "Quit" transient-quit-all)]
       ["Move"
-       ("P" "Move Subtree Up" org-move-subtree-up :transient t)
+       ("P" "Move Subtre eUp" org-move-subtree-up :transient t)
        ("N" "Move Subtree Down" org-move-subtree-down :transient t)
        ("B" "Promote Subtree" org-promote-subtree :transient t)
        ("F" "Demote Subtree" org-demote-subtree :transient t)]
@@ -319,6 +226,8 @@
   (keyboard-translate ?\C-t ?\C-x)
   (keyboard-translate ?\C-x ?\C-t)
   (electric-pair-mode)
+  (global-set-key (kbd "M-/") 'completion-at-point)
+  (setq tab-always-indent 'complete)
   (electric-indent-mode t)
   (defun smarter-move-beginning-of-line (arg)
     "Move point back to indentation of beginning of line.
@@ -395,7 +304,7 @@ point reaches the beginning or end of the buffer, stop there."
 	(progn
           (backward-delete-char 1)
           (forward-char))))
-  (global-set-key (kbd "M-/") 'hippie-expand)
+  (global-set-key (kbd "C-M-/") 'hippie-expand)
   
   (setq abbrev-file-name "~/.emacs.d/abbrev.el")
   (info-initialize))
@@ -654,4 +563,23 @@ See `eval-after-load' for the possible formats of FORM."
   :after vertico
   :bind ("M-R" . vertico-repeat)
   :hook (minibuffer-setup . vertico-repeat-save))
+
+(use-package haskell-mode
+  :mode ("\\.hs\\'" . haskell-mode)
+  :ensure t
+ :hook (haskell-mode . eglot-ensure))
+
+  (use-package exec-path-from-shell
+    :ensure t
+    :config
+    (exec-path-from-shell-initialize))
+
+
+
+(use-package tree-sitter
+  :ensure t
+  :config (global-tree-sitter-mode))
+
+(use-package tree-sitter-langs
+  :ensure t)
 

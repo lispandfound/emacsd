@@ -28,6 +28,7 @@
  '(kept-new-versions 6)
  '(meow-use-cursor-position-hack t)
  '(minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+ '(native-comp-async-report-warnings-errors nil)
  '(org-M-RET-may-split-line '((default)))
  '(org-agenda-block-separator "")
  '(org-agenda-files '("~/Sync/todo.org"))
@@ -35,14 +36,10 @@
  '(org-capture-templates
    '(("t" "Personal todo" entry
       (file+headline "~/Sync/todo.org" "Inbox")
-      "* TODO %?
-%i
-" :prepend t)
+      "* TODO %?\12%i\12" :prepend t)
      ("n" "Personal notes" entry
       (file+headline "~/Sync/notes.org" "Inbox")
-      "* %u %?
-%i
-" :prepend t)))
+      "* %u %?\12%i\12" :prepend t)))
  '(org-cite-export-processors '((latex biblatex nil nil) (t csl nil nil)))
  '(org-default-notes-file "~/Sync/todo.org")
  '(org-directory "~/Sync/")
@@ -99,9 +96,10 @@
    '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "KILL(k)")
      (sequence "[ ](T)" "[?](W)" "[P](P)" "|" "[X](D)" "[-](K)")))
  '(package-selected-packages
-   '(meow cape skempo citar visible-mark embrace cdlatex tongbu beacon smartparens org-appear avy citar-embark moody expand-region embark-consult orderless popwin gap-mode tree-sitter-langs tree-sitter auctex embark flymake-collection which-key))
+   '(tree-sitter-langs tree-sitter combobulate shm exec-path-from-shell meow skempo citar visible-mark embrace tongbu smartparens org-appear citar-embark moody popwin gap-mode auctex flymake-collection))
  '(popwin:special-display-config
-   '(("*Help*" :height 0.4 :stick t)
+   '(("*haskell*" :stick t :tail nil)
+     ("*Help*" :height 0.4 :stick t)
      ("*Warnings*" :height 0.3 :position bottom)
      ("*Backtrace*" :height 0.3 :position bottom)
      ("*Messages*" :height 0.3 :position bottom)
