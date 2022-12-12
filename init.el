@@ -5,6 +5,10 @@
 (package-initialize)
 
 
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+
 (eval-when-compile
   (require 'use-package))
 
@@ -226,6 +230,7 @@
   (keyboard-translate ?\C-t ?\C-x)
   (keyboard-translate ?\C-x ?\C-t)
   (electric-pair-mode)
+  (setq save-abbrevs 'silently)
   (global-set-key (kbd "M-/") 'completion-at-point)
   (setq tab-always-indent 'complete)
   (electric-indent-mode t)
