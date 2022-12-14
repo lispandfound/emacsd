@@ -349,6 +349,7 @@ point reaches the beginning or end of the buffer, stop there."
          ("M-s l" . consult-line)
          ("M-s L" . consult-line-multi)
          ("M-s m" . consult-multi-occur)
+	 ("C-c #" . consult-grep-denote)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
          ;; Isearch integration
@@ -369,6 +370,10 @@ point reaches the beginning or end of the buffer, stop there."
 
   ;; The :init configuration is always executed (Not lazy)
   :init
+
+  (defun consult-grep-denote ()
+    (interactive)
+    (consult-grep denote-directory))
 
   ;; Optionally configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
@@ -583,3 +588,5 @@ See `eval-after-load' for the possible formats of FORM."
 (use-package tree-sitter-langs
   :ensure t)
 
+(use-package denote
+  :ensure t)

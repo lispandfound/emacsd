@@ -16,6 +16,8 @@
  '(corfu-cycle t)
  '(cursor-type 'bar)
  '(delete-old-versions t)
+ '(denote-directory "/var/home/jake/Sync/notes")
+ '(denote-known-keywords '("research" "meetings" "thesis"))
  '(dired-dwim-target t)
  '(display-line-numbers t)
  '(enable-recursive-minibuffers t)
@@ -34,12 +36,12 @@
  '(org-agenda-files '("~/Sync/todo.org"))
  '(org-attach-id-dir ".attach")
  '(org-capture-templates
-   '(("t" "Personal todo" entry
+   '(("n" "New note (with Denote)" plain
+      (file denote-last-path)
+      #'denote-org-capture :jump-to-captured t :kill-buffer t :no-save t :immediate-finish nil)
+     ("t" "Personal todo" entry
       (file+headline "~/Sync/todo.org" "Inbox")
-      "* TODO %?\12%i\12" :prepend t)
-     ("n" "Personal notes" entry
-      (file+headline "~/Sync/notes.org" "Inbox")
-      "* %u %?\12%i\12" :prepend t)))
+      "* TODO %?\12%i\12" :prepend t)))
  '(org-cite-export-processors '((latex biblatex nil nil) (t csl nil nil)))
  '(org-default-notes-file "~/Sync/todo.org")
  '(org-directory "~/Sync/")
@@ -96,7 +98,7 @@
    '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "KILL(k)")
      (sequence "[ ](T)" "[?](W)" "[P](P)" "|" "[X](D)" "[-](K)")))
  '(package-selected-packages
-   '(tree-sitter-langs tree-sitter combobulate shm exec-path-from-shell meow skempo citar visible-mark embrace tongbu smartparens org-appear citar-embark moody popwin gap-mode auctex flymake-collection))
+   '(denote tree-sitter-langs tree-sitter combobulate shm exec-path-from-shell meow skempo citar visible-mark embrace tongbu smartparens org-appear citar-embark moody popwin gap-mode auctex flymake-collection))
  '(popwin:special-display-config
    '(("*haskell*" :stick t :tail nil)
      ("*Help*" :height 0.4 :stick t)
