@@ -16,7 +16,7 @@
  '(corfu-cycle t)
  '(cursor-type 'bar)
  '(delete-old-versions t)
- '(denote-directory "/var/home/jake/Sync/notes")
+ '(denote-directory "~/Sync/notes")
  '(denote-known-keywords '("research" "meetings" "thesis"))
  '(dired-dwim-target t)
  '(display-line-numbers t)
@@ -98,7 +98,7 @@
    '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(d)" "KILL(k)")
      (sequence "[ ](T)" "[?](W)" "[P](P)" "|" "[X](D)" "[-](K)")))
  '(package-selected-packages
-   '(denote tree-sitter-langs tree-sitter combobulate shm exec-path-from-shell meow skempo citar visible-mark embrace tongbu smartparens org-appear citar-embark moody popwin gap-mode auctex flymake-collection))
+   '(citar-denote denote tree-sitter-langs tree-sitter combobulate shm exec-path-from-shell meow skempo citar visible-mark embrace tongbu smartparens org-appear citar-embark moody popwin gap-mode auctex flymake-collection))
  '(popwin:special-display-config
    '(("*haskell*" :stick t :tail nil)
      ("*Help*" :height 0.4 :stick t)
