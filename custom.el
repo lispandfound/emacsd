@@ -21,6 +21,7 @@
  '(dired-dwim-target t)
  '(display-line-numbers t)
  '(enable-recursive-minibuffers t)
+ '(gap-executable "/usr/local/bin/gap")
  '(inhibit-startup-screen t)
  '(initial-frame-alist '((fullscreen . fullscreen)))
  '(initial-major-mode 'org-mode)
