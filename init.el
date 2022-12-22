@@ -595,3 +595,7 @@ See `eval-after-load' for the possible formats of FORM."
 
 (use-package denote
   :ensure t)
+(use-package citar-denote
+  :ensure t
+  :after (denote citar)
+  (citar-denote-mode))
